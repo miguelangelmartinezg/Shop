@@ -26,12 +26,23 @@ namespace Shop.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //AGREGAMOS LA INYECCION 
+            //AGREGAMOS LA INYECCION  DE LA CONEXION DE LA BD
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             
             });
+
+            //INYECCION DE LA CLASE QUE ALIMENTA LA BD
+            services.AddTransient<SeedDb>();
+
+            //CONFIGURACION DE LA IYECCION DEL REPOSITORIO QUE SIRVE DE CAPA ENTRE EL CONTROLADOR Y LA BD
+            services.AddScoped<IRepository, Repository>();
+
+                                        //*****OJO*******
+            //Diferencia entre ADDTRANSIENT y ADDSCOPED
+            //addTransient tiene un periodo de tiempo corto, es decir el recolector de basura lo destruye
+            //addScoped la Inyeccion queda permanente durante toda la ejecucion para que sea reusada las veces que sea necesaria
 
             services.Configure<CookiePolicyOptions>(options =>
             {
